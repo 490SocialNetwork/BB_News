@@ -12,7 +12,8 @@ export default class Login extends Component {
         redirect: false,
         toDashboard: false,
         isLoading: false,
-        page: ''
+        user: '',
+        admin: false
     };
 
 
@@ -41,6 +42,7 @@ export default class Login extends Component {
                     if(result.data[i].email == email && result.data[i].password_hash == password){
                         console.log('Success');
                         this.setState({page: result.data[i].first_name});
+                        this.setState({admin: result.data[i].isAdmin});
                         flag = true;
                     }
                 }
@@ -106,7 +108,7 @@ export default class Login extends Component {
                                     </form>
                                     {this.renderRedirect()}
                                 
-                                {this.state.page !== '' && <Redirect to={LoginView} />}
+
                                 </div>
                             </div>
                         </div>
