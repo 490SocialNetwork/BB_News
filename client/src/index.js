@@ -3,10 +3,26 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import LoginView from "./pages/home/LoginView";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/css/bootstrap.css";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import HomeView from "./pages/home/HomeView";
 
 ReactDOM.render(
   <React.StrictMode>
-    <LoginView />
+    <Router>
+      <Switch>
+        <Route exact path="/">
+          <LoginView />
+        </Route>
+        <Route path="/home">
+          <HomeView />
+        </Route>
+        <Route path="/admin">
+          <HomeView admin={true} />
+        </Route>
+      </Switch>
+    </Router>
   </React.StrictMode>,
   document.getElementById("root")
 );
