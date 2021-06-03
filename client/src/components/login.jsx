@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 // import Sidebar from "../elements/sidebar";
 import {Link, Redirect} from "react-router-dom";
 import axios from 'axios';
+import LoginView from "../pages/home/LoginView";
 
 
 export default class Login extends Component {
@@ -10,8 +11,10 @@ export default class Login extends Component {
     state = {
         redirect: false,
         toDashboard: false,
-        isLoading: false
+        isLoading: false,
+        page: ''
     };
+
 
     handleSubmit = event => {
         event.preventDefault();
@@ -32,15 +35,18 @@ export default class Login extends Component {
         axios.get(url)
             .then(result => {
                 console.log(result.data)
+                let flag = false;
                 for(let i = 0; i<result.data.length; i++){
-                    console.log(result.data[i].email);
+                    console.log(result.data[i]);
                     if(result.data[i].email == email && result.data[i].password_hash == password){
                         console.log('Success');
-                        break;
-                        // return <Redirect to='/' />
+                        this.setState({page: result.data[i].first_name});
+                        flag = true;
                     }
                 }
-                alert('Incorrect Login, Try again');
+                if(flag === false){
+                    alert('Incorrect Login, Try again');
+                }
 
             });
             this.setState({isLoading: false});
@@ -99,6 +105,8 @@ export default class Login extends Component {
                                         </button>
                                     </form>
                                     {this.renderRedirect()}
+                                
+                                {this.state.page !== '' && <Redirect to={LoginView} />}
                                 </div>
                             </div>
                         </div>
