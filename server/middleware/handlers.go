@@ -123,6 +123,24 @@ func GetAllUser(w http.ResponseWriter, r *http.Request) {
     json.NewEncoder(w).Encode(users)
 }
 
+func GetUserLogin(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Context-Type", "application/x-www-form-urlencoded")
+    w.Header().Set("Access-Control-Allow-Origin", "*")
+    // get all the users in the db
+    params := mux.Vars(r)
+
+    email := params["email"]
+
+    users, err := getUserLoginInfo(string(email))
+
+    if err != nil {
+        log.Fatalf("Unable to get all user. %v", err)
+    }
+
+    // send all the users as response
+    json.NewEncoder(w).Encode(users)
+}
+
 // UpdateUser update user's detail in the postgres db
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
 
@@ -213,7 +231,7 @@ func insertUser(user models.User) int64 {
 
     // create the insert sql query
     // returning userid will return the id of the inserted user
-    sqlStatement := `INSERT INTO users (first_name, last_name, email, password_hash) VALUES ($1, $2, $3, crypt($4, gen_salt('bf'))) RETURNING userid`
+    sqlStatement := `INSERT INTO users (first_name, last_name, email, password_hash) VALUES ($1, $2, $3, $4) RETURNING userid`
 
     // the inserted id will store in this id
     var id int64
@@ -248,6 +266,39 @@ func getUser(id int64) (models.User, error) {
 
     // execute the sql statement
     row := db.QueryRow(sqlStatement, id)
+
+    // unmarshal the row object to user
+    err := row.Scan(&user.ID, &user.First_Name, &user.Last_Name, &user.Email, &user.Password, &user.IsAdmin)
+
+    switch err {
+    case sql.ErrNoRows:
+        fmt.Println("No rows were returned!")
+        return user, nil
+    case nil:
+        return user, nil
+    default:
+        log.Fatalf("Unable to scan the row. %v", err)
+    }
+
+    // return empty user on error
+    return user, err
+}
+
+func getUserLoginInfo(email string) (models.User, error) {
+    // create the postgres db connection
+    db := createConnection()
+
+    // close the db connection
+    defer db.Close()
+
+    // create a user of models.User type
+    var user models.User
+
+    // create the select sql query
+    sqlStatement := `SELECT email,password_hash FROM users WHERE email=$1`
+
+    // execute the sql statement
+    row := db.QueryRow(sqlStatement, email)
 
     // unmarshal the row object to user
     err := row.Scan(&user.ID, &user.First_Name, &user.Last_Name, &user.Email, &user.Password, &user.IsAdmin)

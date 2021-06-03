@@ -7,6 +7,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/css/bootstrap.css";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import HomeView from "./pages/home/HomeView";
+import Register from "./components/Register";
+import Login from "./components/login";
+
 
 ReactDOM.render(
   <React.StrictMode>
@@ -15,8 +18,14 @@ ReactDOM.render(
         <Route exact path="/">
           <LoginView />
         </Route>
+        <Route exact path="/login">
+          <Login />
+        </Route>
         <Route path="/home">
           <HomeView />
+        </Route>
+        <Route path="/register">
+          <Register/>
         </Route>
         <Route path="/admin">
           <HomeView admin={true} />

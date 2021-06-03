@@ -8,9 +8,10 @@ function LoginForm({ isCreate }) {
   const [password, setPassword] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
   const [error, setError] = useState("");
-  const handleSubmit = (e) => {
+  const handleSubmit = (e) => {    
     e.preventDefault();
     if (isCreate) {
+      
       //const CreateRes = createUser();
       setError("Create Account Failed");
     } else {

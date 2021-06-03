@@ -21,21 +21,20 @@ const LoginView = () => {
               className="mr-4"
               variant="primary"
               type="submit"
-              onClick={() => handleLogin("SIGNUP")}
-            >
+              href="/register">
+            
               Sign Up
             </Button>
             <Button
               variant="outline-secondary"
               type="submit"
-              onClick={() => handleLogin("LOGIN")}
-            >
+              href="/login">
               Login
             </Button>
           </Nav>
         </Container>
       </Navbar>
-      <LoginForm isCreate={isCreate} />
+      <h1>Welcome</h1>
     </Layout>
   );
 };
